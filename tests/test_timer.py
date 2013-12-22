@@ -3,7 +3,7 @@ import unittest
 import calendar
 from datetime import datetime
 
-from utils import \
+from utils.timer import \
     Timer, \
     NoCheckpointSetError
 
