@@ -1,4 +1,21 @@
 import time
+import threading
+
+
+def locked(lock):
+    """Decorator usefull to access to a function with a lock named `lock`"""
+
+    def _locked(func):
+        def wrapper(*args, **kwargs):
+            lock_to_use = getattr(args[0], lock)
+            if not isinstance(lock_to_use, threading.Lock):
+                raise ValueError('`%s` is not an instance neither of threading.Lock neither '
+                                 'of threading.Condition', lock_to_use)
+            with lock_to_use:
+                return func(*args, **kwargs)
+
+        return wrapper
+    return _locked
 
 
 class NoCheckpointSetError(Exception):
