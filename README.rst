@@ -38,6 +38,15 @@ Try also the ``example.py`` by running:
     >>> python -m requests_throttler.example
 
 
+Installation
+------------
+
+Use ``pip`` to install RequestsThrottler:
+::
+
+    >>> pip install RequestsThrottler
+
+
 Features
 --------
 
