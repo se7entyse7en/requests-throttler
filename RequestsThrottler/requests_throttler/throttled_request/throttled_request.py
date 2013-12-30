@@ -1,6 +1,6 @@
 import threading
 
-from utils import locked
+from requests_throttler.utils import locked
 
 
 class ThrottledRequestAlreadyFinished(Exception):

@@ -3,7 +3,7 @@ import unittest
 import calendar
 from datetime import datetime
 
-from utils.timer import \
+from requests_throttler.utils.timer import \
     Timer, \
     NoCheckpointSetError
 

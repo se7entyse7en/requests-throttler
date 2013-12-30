@@ -1,7 +1,7 @@
 import logging
 import threading
 
-from settings import \
+from requests_throttler.settings import \
     LOG_FORMAT, \
     DEFAULT_LOG_LEVEL
 

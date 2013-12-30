@@ -5,9 +5,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 import requests
 
-from utils import locked, get_logger
-from utils.timer import Timer
-from throttled_request.throttled_request import ThrottledRequest
+from requests_throttler.utils.timer import Timer
+from requests_throttler.utils import locked, get_logger
+from requests_throttler.throttled_request.throttled_request import ThrottledRequest
 
 logger = get_logger(__name__)
 
