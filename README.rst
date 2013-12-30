@@ -35,7 +35,7 @@ Too hard? Then just submit your requests inside a with statement! Here's an exam
 Try also the ``example.py`` by running:
 ::
 
-    >>> python -m requests_throttler.example
+    >>> python example.py
 
 
 Installation
