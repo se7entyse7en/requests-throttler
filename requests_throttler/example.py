@@ -1,6 +1,6 @@
 import requests
 
-from throttler.base_throttler import BaseThrottler
+from requests_throttler import BaseThrottler
 
 
 def main():
