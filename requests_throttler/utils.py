@@ -49,6 +49,12 @@ def get_logger(name, level=DEFAULT_LOG_LEVEL):
 
 
 class NoCheckpointSetError(Exception):
+    """Exception that occurs when no checkpoint is set and it is needed
+    
+    :param msg: the message
+    :type msg: string
+
+    """
 
     def __init__(self, msg):
         self.msg = msg
@@ -60,18 +66,20 @@ class NoCheckpointSetError(Exception):
 class Timer(object):
     """This class provides an utility to calculates elapsed time since a start/check point
 
-
-    Attributes:
-        `_start` - the starting time of the timer
-        `_checkpoint` - the last checkpoint of the timer
+    :param start: the starting time of the timer
+    :type start: float
+    :param checkpoint: the last checkpoint of the timer
+    :type checkpoint: float
 
     """
 
     def __init__(self, start=None, checkpoint=None):
         """Create the timer with the given starting time and an eventual checkpoint
 
-        `start` - the starting time of the timer (default: now)
-        `checkpoint` - the checkpoint (default: `None`)
+        :param start: the starting time of the timer (default: *now*)
+        :type start: float
+        :param checkpoint: the last checkpoint of the timer (default: :const:`None`)
+        :type checkpoint: float
 
         """
         self._start = start if start is not None else time.time()
@@ -79,31 +87,51 @@ class Timer(object):
 
     @property
     def start(self):
-        """Return the timer starting time"""
+        """The timer starting time
 
+        :getter: Returns :attr:`start`
+        :type: float
+
+        """
         return self._start
 
     @property
     def checkpoint(self):
-        """Return the last checkpoint"""
+        """The last checkpoint
 
+        :getter: Returns :attr:`checkpoint`
+        :setter: Sets the checkpoint
+        :type: float
+
+        """
         return self._checkpoint
 
     @checkpoint.setter
     def checkpoint(self, checkpoint):
-        """Set a checkpoint"""
+        """Set a checkpoint
 
+        :param checkpoint: the new checkpoint
+        :type checkpoint: float
+
+        """
         self._checkpoint = checkpoint
 
     def total_elapsed(self):
-        """Return the elapsed time since the timer starting time"""
+        """Return the elapsed time since the timer starting time
 
+        :return: the total elapsed time since the starting time of the timer
+        :rtype: float
+
+        """
         return time.time() - self._start
 
     def elapsed(self):
         """Return the elapsed time since the last checkpoint
 
-        It raises `NoCheckpointSetError` if `checkpoint` is `None`.
+        :return: the elapsed time since the last checkpoint
+        :rtype: float
+        :raises:
+            :NoCheckpointSetError: if :attr:`checkpoint` is :const:`None`
 
         """
         if self._checkpoint is None:
@@ -113,12 +141,18 @@ class Timer(object):
     def get_elapsed_and_set_checkpoint(self, change=True, new_checkpoint=None):
         """Return the elapsed time since the last checkpoint and change the checkpoint
 
-        The checkpoint is changed with `new_checkpoint` if `change` is `True`. If
-        `new_checkpoint` is `None`, then to checkpoint is assigned the current time. It
-        raises `NoCheckpointSetError` if `checkpoint` is `None`.
+        The :attr:`checkpoint` is changed with ``new_checkpoint`` if ``change`` is :const:`True`.
+        If ``new_checkpoint`` is ``None``, then to ``checkpoint`` is assigned the current time.
 
-        `change` - the flag that indicates if the checkpoint is to be changed (default: `True`)
-        `new_checkpoint` - the new checkpoint to assign (default: `None`)
+        :param change: the flag that indicates if the checkpoint is to be changed
+                       (default: :const:`True`)
+        :type change: boolean
+        :param new_checkpoint: the new checkpoint to assign (default: :const:`None`)
+        :type new_checkpoint: float
+        :return: the elapsed time since the last checkpoint
+        :rtype: float
+        :raise:
+            :NoCheckpointSetError: if :attr:`checkpoint` is :const:`None`
 
         """
         if self._checkpoint is None:

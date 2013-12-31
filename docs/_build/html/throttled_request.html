@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>throttled_request — the module containing the objects to throttle &mdash; RequestsThrottler 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="RequestsThrottler 0.1.1 documentation" href="index.html" />
+    <link rel="next" title="throttler — the module containing the throttlers" href="throttler.html" />
+    <link rel="prev" title="Welcome to RequestsThrottler’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="throttler.html" title="throttler — the module containing the throttlers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to RequestsThrottler’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">RequestsThrottler 0.1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-requests_throttler.throttled_request">
+<span id="throttled-request-the-module-containing-the-objects-to-throttle"></span><h1><a class="reference internal" href="#module-throttled_request" title="throttled_request: The module containing the class representing a request to throttle"><tt class="xref py py-mod docutils literal"><span class="pre">throttled_request</span></tt></a> &#8212; the module containing the objects to throttle<a class="headerlink" href="#module-requests_throttler.throttled_request" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-throttled_request"></span><p>This module provides the class representing the requests to throttle.</p>
+<div class="section" id="throttledrequest-the-throttled-request-object">
+<h2><a class="reference internal" href="#requests_throttler.throttled_request.ThrottledRequest" title="requests_throttler.throttled_request.ThrottledRequest"><tt class="xref py py-class docutils literal"><span class="pre">ThrottledRequest</span></tt></a> &#8212; the throttled request object<a class="headerlink" href="#throttledrequest-the-throttled-request-object" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="requests_throttler.throttled_request.ThrottledRequestAlreadyFinished">
+<em class="property">class </em><tt class="descclassname">requests_throttler.throttled_request.</tt><tt class="descname">ThrottledRequestAlreadyFinished</tt><big>(</big><em>msg</em><big>)</big><a class="headerlink" href="#requests_throttler.throttled_request.ThrottledRequestAlreadyFinished" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception that occurs when a finished is tried to change some attributes to a finished
+throttled request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>msg</strong> (<em>string</em>) &#8211; the message</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="requests_throttler.throttled_request.ThrottledRequest">
+<em class="property">class </em><tt class="descclassname">requests_throttler.throttled_request.</tt><tt class="descname">ThrottledRequest</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#requests_throttler.throttled_request.ThrottledRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class represents a throttled request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>request</strong> (<em>requests.PreparedRequest</em>) &#8211; the prepared request to throttle</li>
+<li><strong>finished</strong> (<em>boolean</em>) &#8211; the flag that indicates if the request has been sent and a response has
+been received or an exception occured</li>
+<li><strong>response</strong> (<em>requests.Response</em>) &#8211; the response corresponding to the request</li>
+<li><strong>exception</strong> (<em>Exception</em>) &#8211; the exception occured during the request (<tt class="xref py py-const docutils literal"><span class="pre">None</span></tt> if no exceptions
+occured)</li>
+<li><strong>not_done</strong> (<em>threading.Condition</em>) &#8211; the condition on which to wait to have the response an to make the
+object thread-safe</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="requests_throttler.throttled_request.ThrottledRequest.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#requests_throttler.throttled_request.ThrottledRequest.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a throttled request with the given prepared request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> (<em>requests.PreparedRequest</em>) &#8211; the prepared request to throttle</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="requests_throttler.throttled_request.ThrottledRequest.request">
+<tt class="descname">request</tt><a class="headerlink" href="#requests_throttler.throttled_request.ThrottledRequest.request" title="Permalink to this definition">¶</a></dt>
+<dd><p>The corresponding prepared request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns <a class="reference internal" href="#requests_throttler.throttled_request.ThrottledRequest.request" title="requests_throttler.throttled_request.ThrottledRequest.request"><tt class="xref py py-attr docutils literal"><span class="pre">request</span></tt></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">requests.PreparedRequest</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="requests_throttler.throttled_request.ThrottledRequest.finished">
+<tt class="descname">finished</tt><a class="headerlink" href="#requests_throttler.throttled_request.ThrottledRequest.finished" title="Permalink to this definition">¶</a></dt>
+<dd><p>The flag that indicates if the request has been processed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns <a class="reference internal" href="#requests_throttler.throttled_request.ThrottledRequest.finished" title="requests_throttler.throttled_request.ThrottledRequest.finished"><tt class="xref py py-attr docutils literal"><span class="pre">finished</span></tt></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="requests_throttler.throttled_request.ThrottledRequest.response">
+<tt class="descname">response</tt><a class="headerlink" href="#requests_throttler.throttled_request.ThrottledRequest.response" title="Permalink to this definition">¶</a></dt>
+<dd><p>The response obtained by processing the request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body"><p class="first">Returns <a class="reference internal" href="#requests_throttler.throttled_request.ThrottledRequest.response" title="requests_throttler.throttled_request.ThrottledRequest.response"><tt class="xref py py-attr docutils literal"><span class="pre">response</span></tt></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body"><p class="first">Sets the response received after the processing of the request</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raise:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">ThrottledRequestAlreadyFinshed:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">if the throttled request has already finished</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">requests.Response</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="requests_throttler.throttled_request.ThrottledRequest.exception">
+<tt class="descname">exception</tt><a class="headerlink" href="#requests_throttler.throttled_request.ThrottledRequest.exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the exception that occurs by processing the request (blocking)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body"><p class="first">Returns <a class="reference internal" href="#requests_throttler.throttled_request.ThrottledRequest.exception" title="requests_throttler.throttled_request.ThrottledRequest.exception"><tt class="xref py py-attr docutils literal"><span class="pre">exception</span></tt></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body"><p class="first">Sets the exception raised during the processing of the request</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raise:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">ThrottledRequestAlreadyFinshed:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">if the throttled request has already finished</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">Exception</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="requests_throttler.throttled_request.ThrottledRequest.get_response">
+<tt class="descname">get_response</tt><big>(</big><em>timeout=0</em><big>)</big><a class="headerlink" href="#requests_throttler.throttled_request.ThrottledRequest.get_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the response obtained by processing the request</p>
+<p>If <tt class="docutils literal"><span class="pre">timeout</span></tt> is <tt class="xref py py-const docutils literal"><span class="pre">None</span></tt> it waits until a response has been obtained or an
+execption occurs. When a response has been obtained it is returned, if an exception
+occurs it is raised.
+If <tt class="docutils literal"><span class="pre">timeout</span></tt> is not <tt class="xref py py-const docutils literal"><span class="pre">None</span></tt> and no response still hasn&#8217;t been obtained after
+the expiration of <cite>timeout</cite>, then <tt class="xref py py-const docutils literal"><span class="pre">None</span></tt> is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<em>float</em>) &#8211; the timeout value in seconds (default: 0)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#requests_throttler.throttled_request.ThrottledRequest.response" title="requests_throttler.throttled_request.ThrottledRequest.response"><tt class="xref py py-attr docutils literal"><span class="pre">response</span></tt></a> or <tt class="xref py py-const docutils literal"><span class="pre">None</span></tt></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">requests.Response</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="requests_throttler.throttled_request.ThrottledRequest.get_exception">
+<tt class="descname">get_exception</tt><big>(</big><em>timeout=0</em><big>)</big><a class="headerlink" href="#requests_throttler.throttled_request.ThrottledRequest.get_exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the exception that occurs by processing the request</p>
+<p>If <tt class="docutils literal"><span class="pre">timeout</span></tt> is <tt class="xref py py-const docutils literal"><span class="pre">None</span></tt> it waits until a response has been obtained or an
+execption occurs. If an exception occurs it is returned otherwise <tt class="xref py py-const docutils literal"><span class="pre">None</span></tt> is
+returned.
+If <tt class="docutils literal"><span class="pre">timeout</span></tt> is not <tt class="xref py py-const docutils literal"><span class="pre">None</span></tt> and no response still hasn&#8217;t been obtained
+<tt class="xref py py-const docutils literal"><span class="pre">None</span></tt> is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<em>float</em>) &#8211; the timeout value in seconds (default: 0)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#requests_throttler.throttled_request.ThrottledRequest.exception" title="requests_throttler.throttled_request.ThrottledRequest.exception"><tt class="xref py py-attr docutils literal"><span class="pre">exception</span></tt></a> or <tt class="xref py py-const docutils literal"><span class="pre">None</span></tt></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Exception</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">throttled_request</span></tt> &#8212; the module containing the objects to throttle</a><ul>
+<li><a class="reference internal" href="#throttledrequest-the-throttled-request-object"><tt class="docutils literal"><span class="pre">ThrottledRequest</span></tt> &#8212; the throttled request object</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to RequestsThrottler&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="throttler.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">throttler</span></tt> &#8212; the module containing the throttlers</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/throttled_request.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="throttler.html" title="throttler — the module containing the throttlers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to RequestsThrottler’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">RequestsThrottler 0.1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Lou Marvin Caraig.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>
