@@ -1,5 +1,6 @@
 import logging
 import threading
+from functools import wraps
 
 from requests_throttler.settings import \
     LOG_FORMAT, \
@@ -10,6 +11,7 @@ def locked(lock):
     """Decorator usefull to access to a function with a lock named `lock`"""
 
     def _locked(func):
+        @wraps(func)
         def wrapper(*args, **kwargs):
             lock_to_use = getattr(args[0], lock)
             if not isinstance(lock_to_use, threading.Lock().__class__) and \
