@@ -230,19 +230,33 @@ class BaseThrottler(object):
         self._status = 'running'
         self.status_lock.notify()
 
-    def submit(self, reqs):
-        """Submit a single request or an entire list and return the corresponding response
+    def submit(self, req):
+        """Submit a single request and return the corresponding throttled request
 
-        If `reqs` is a single request then the corresponding throttled request is returned,
-        otherwise if `reqs` is a `list` then the list of corresponding throttled requests
-        is returned.
-
-        `reqs` - it can be a single request or a list of them
+        :param req: the request to throttle
+        :type req: requests.Request
+        :return: the corresponding throttled request
+        :rtype: throttled_request.ThrottledRequest
+        :raise:
+            :ThrottlerStatusError: if the throttler is not ``running``, ``paused`` or
+                                   ``waiting``
         
         """
-        if isinstance(reqs, list):
-            return [self._submit(r) for r in reqs]
-        return self._submit(reqs)
+        return self._submit(req)
+
+    def multi_submit(self, reqs):
+        """Submits a list of requests and return the corresponding list of throttled requests
+
+        :param reqs: the list of requests to throttle
+        :type req: list(requests.Request)
+        :return: the corresponding list of throttled requests
+        :rtype: list(throttled_request.ThrottledRequest)
+        :raise:
+            :ThrottlerStatusError: if the throttler is not ``running``, ``paused`` or
+                                   ``waiting``
+        
+        """
+        return [self._submit(r) for r in reqs]
 
     def _submit(self, request):
         """Submits the given request by preparing it and enqueueing it

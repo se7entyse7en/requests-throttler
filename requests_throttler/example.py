@@ -9,7 +9,7 @@ def main():
     reqs = [r for i in range(0, 10)]
 
     with bt:
-        throttled_requests = bt.submit(reqs)
+        throttled_requests = bt.multi_submit(reqs)
 
     for r in throttled_requests:
         print r.response
