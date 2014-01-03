@@ -8,5 +8,5 @@ __copyright__ = 'Copyright 2013 Lou Marvin Caraig'
 
 
 from . import utils
-from .throttled_request.throttled_request import ThrottledRequest
-from .throttler.base_throttler import BaseThrottler
+from .throttled_request import ThrottledRequest
+from .throttler import BaseThrottler

@@ -1,3 +1,13 @@
+"""
+.. module:: throttler
+   :synopsis: The module containing the throttlers
+
+.. moduleauthor:: Lou Marvin Caraig <loumarvincaraig@gmail.com>
+
+This module contains the throttlers.
+
+"""
+
 import time
 import threading
 from collections import deque as queue
@@ -5,9 +15,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 import requests
 
-from requests_throttler.utils.timer import Timer
+from requests_throttler.utils import Timer
 from requests_throttler.utils import locked, get_logger
-from requests_throttler.throttled_request.throttled_request import ThrottledRequest
+from requests_throttler.throttled_request import ThrottledRequest
 
 logger = get_logger(__name__)
 

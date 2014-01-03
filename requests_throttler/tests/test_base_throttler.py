@@ -2,8 +2,8 @@ import unittest
 
 import requests
 
-from requests_throttler.throttled_request.throttled_request import ThrottledRequest
-from requests_throttler.throttler.base_throttler import \
+from requests_throttler.throttled_request import ThrottledRequest
+from requests_throttler.throttler import \
     BaseThrottler, \
     THROTTLER_STATUS, \
     THROTTLER_STATUS_DEPENDENCIES, \
