@@ -2,8 +2,8 @@ import unittest
 
 import requests
 
-from requests_throttler.throttled_request.throttled_request import ThrottledRequest
-from requests_throttler.throttler.base_throttler import \
+from requests_throttler.throttled_request import ThrottledRequest
+from requests_throttler.throttler import \
     BaseThrottler, \
     THROTTLER_STATUS, \
     THROTTLER_STATUS_DEPENDENCIES, \
@@ -112,7 +112,7 @@ class TestBaseThrottler(unittest.TestCase):
         self.assertIsInstance(throttled_request, ThrottledRequest)
         reqs = [self.default_request for i in range(0, 10)]
 
-        throttled_requests = bt.submit(reqs)
+        throttled_requests = bt.multi_submit(reqs)
         self.assertIsInstance(throttled_requests, list)
         self.assertEqual(10, len(throttled_requests))
 
@@ -123,7 +123,7 @@ class TestBaseThrottler(unittest.TestCase):
             self.assertIsInstance(throttled_request, ThrottledRequest)
 
             reqs = [self.default_request for i in range(0, 10)]
-            throttled_requests = bt.submit(reqs)
+            throttled_requests = bt.multi_submit(reqs)
             self.assertIsInstance(throttled_requests, list)
             self.assertEqual(10, len(throttled_requests))
 

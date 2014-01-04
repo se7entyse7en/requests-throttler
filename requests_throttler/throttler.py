@@ -1,3 +1,13 @@
+"""
+.. module:: throttler
+   :synopsis: The module containing the throttlers
+
+.. moduleauthor:: Lou Marvin Caraig <loumarvincaraig@gmail.com>
+
+This module contains the throttlers.
+
+"""
+
 import time
 import threading
 from collections import deque as queue
@@ -5,9 +15,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 import requests
 
-from requests_throttler.utils.timer import Timer
+from requests_throttler.utils import Timer
 from requests_throttler.utils import locked, get_logger
-from requests_throttler.throttled_request.throttled_request import ThrottledRequest
+from requests_throttler.throttled_request import ThrottledRequest
 
 logger = get_logger(__name__)
 
@@ -21,6 +31,16 @@ THROTTLER_STATUS_DEPENDENCIES = {'initialized': ['initialized', 'running', 'stop
 
 
 class ThrottlerStatusError(Exception):
+    """Exception that occurs when something goes wrong while changing status
+
+    :param msg: the message
+    :type msg: string
+    :param current_status: the status to set
+    :type current_status: string
+    :param previous_status: the previous status
+    :type previous_status: string
+
+    """
     
     def __init__(self, msg, current_status, previous_status=None):
         self.msg = msg
@@ -37,6 +57,14 @@ class ThrottlerStatusError(Exception):
 
 
 class FullRequestsPoolError(Exception):
+    """Exception that occurs when an enqueue is tried in a full pool
+
+    :param msg: the message
+    :type msg: string
+    :param pool: the pool
+    :type pool: collections.deque
+
+    """
     
     def __init__(self, msg, pool):
         self.msg = msg
@@ -54,33 +82,46 @@ class BaseThrottler(object):
     elapsed. The pool can be limited by a maximum length and an exception is raised if a request
     is tried to be enqueued in the full pool.
 
-
-    Attributes:
-        `_name` - the name of the throttler
-        `_requests_pool` - the pool containing the requests (FIFO)
-        `_delay` - the delay in seconds between each request
-        `_status` - the current status of the thottler
-        `_session` - the session to perform the requests
-        `_executor` - the executor responsable to start the throttler
-        `_timer` - the timer responsable to measure the time between each request
-        `_successes` - the number of request that succeded
-        `_failures` - the number of request that failed
-        `_wait_enqueued` - a flag that indicates if after the shutdown the requests enqueued
-                           have to be finished or aborted
-        `status_lock` - the condition on which to wait on a specific status change
-        `not_empty` - the condition on which to wait when the pool of requests is empty
+    :param name: the name of the throttler
+    :type name: string
+    :param requests_pool: the pool containing the requests (FIFO)
+    :type requests_pool: collections.dequeue
+    :param delay: the delay in seconds between each request
+    :type delay: float
+    :param status: the current status of the thottler
+    :type status: string
+    :param session: the session to use to perform the requests
+    :type session: requests.Session
+    :param executor: the executor responsable to start the throttler
+    :type executor: threading.ThreadPoolExecutor
+    :param timer: the timer responsable to measure the time between each request
+    :type timer: utils.Timer
+    :param successes: the number of request that succeded
+    :type successes: int
+    :param failures: the number of request that failed
+    :type successes: int
+    :param wait_enqueued: a flag that indicates if after the shutdown the requests enqueued
+                          have to be finished or aborted
+    :type wait_enqueued: boolean
+    :param status_lock: the condition on which to wait on a specific status change
+    :type status_lock: threading.Condition
+    :param not_empty: the condition on which to wait when the pool of requests is empty
+    :type not_empty: threading.Condition
 
     """
 
     def __init__(self, name=None, delay=0, max_pool_size=None):
         """Create a base throttler with the given delay time and pool size
 
-        If `delay` is a negative number then `ValueError` is raised.
-
-        `name` - the name of the throttler (default: `None`)
-        `delay` - the fixed positive amount of time that must elapsed bewteen each request
-                  in seconds (default: 0)
-        `max_pool_size` - the maximum number of enqueueable requests (default: unlimited)
+        :param name: the name of the throttler (default: :const:`None`)
+        :type name: string
+        :param delay: the fixed positive amount of time that must elapsed bewteen each request
+                      in seconds (default: 0)
+        :type delay: float
+        :param max_pool_size: the maximum number of enqueueable requests (default: *unlimited*)
+        :type max_pool_size: int
+        :raise:
+            :ValueError: if ``delay`` is a negative number
 
         """
         if delay < 0:
@@ -118,21 +159,36 @@ class BaseThrottler(object):
 
     @property
     def name(self):
-        """Return the name of the throttler"""
+        """The name of the throttler
 
+        :getter: Returns :attr:`name`
+        :type: string
+
+        """
         return self._name
 
     @property
     def delay(self):
-        """Return the delay value between each request"""
+        """The delay value between each request
 
+        :getter: Returns :attr:`delay`
+        :type: float
+
+        """
         return self._delay
 
     @property
     @locked('status_lock')
     def status(self):
-        """Return the status of the throttler"""
+        """The status of the throttler
 
+        :getter: Returns :attr:`status`
+        :setter: Sets the new status
+        :raise:
+            :ThrottlerStatusError: if the new status is invalid
+        :type: string
+
+        """
         return self._status
 
     @status.setter
@@ -140,9 +196,9 @@ class BaseThrottler(object):
     def status(self, status):
         """Set a new status
 
-        If `status` is invalid then `ThrottlerStatusError` is raised.
-
-        `status` - the new status to assign
+        :param status: the new status to assign
+        :raise:
+            :ThrottlerStatusError: if the new status is invalid
 
         """
         if status not in THROTTLER_STATUS:
@@ -156,21 +212,30 @@ class BaseThrottler(object):
     @property
     @locked('status_lock')
     def successes(self):
-        """Return the number of successes"""
+        """The number of successes
 
+        :getter: Returns :attr:`successes`
+        :type: int
+
+        """
         return self._successes
 
     @property
     @locked('status_lock')
     def failures(self):
-        """Return the number of failures"""
+        """The number of failures
 
+        :getter: Returns :attr:`failures`
+        :type: int
+
+        """
         return self._failures
 
     def start(self):
         """Start the throttler by starting the main loop
 
-        If the throller has been already started then `ThrottlerStatusError` is raised.
+        :raise:
+            :ThrottlerStatusError: if the throller has been already started
 
         """
         logger.info("Starting base throttler '%s'...", self._name)
@@ -188,11 +253,13 @@ class BaseThrottler(object):
     def shutdown(self, wait_enqueued=True):
         """Shutdown the throttler by shutdowning the executor
 
-        If `wait_enqueued` is `True` then before stopping the throttlers consumes all requests
-        enqueued. Otherwise the throttler is forced to be shutdowned
+        If ``wait_enqueued`` is :const:`True` then before stopping the throttlers consumes all
+        the requests enqueued. Otherwise the throttler is forced to be shutdowned.
 
-        `wait_enqueued` - the flag that indicates if the already enqueued requests are to be
-                          processed or aborted
+        :param wait_enqueued: the flag that indicates if the already enqueued requests are to be
+                              processed or aborted
+        :raise:
+            :ThrottlerStatusError: if the throttler has been already shutdowned
 
         """
         if self.status in ['stopped', 'ending', 'ended']:
@@ -207,7 +274,9 @@ class BaseThrottler(object):
     def pause(self):
         """Pause the throttler
 
-        If the throttler is not `running` or `waiting` then `ThrottlerStatusError` is raised.
+        :raise:
+            :ThrottlerStatusError: if the throttler is not ``running``, ``waiting`` or already
+                                   ``paused``
 
         """
         if self._status == 'paused':
@@ -220,9 +289,10 @@ class BaseThrottler(object):
 
     @locked('status_lock')
     def unpause(self):
-        """Unpauses the throttler
+        """Unpause the throttler
 
-        If the throttler is not `paused` then `ThrottlerStatusError` is raised.
+        :raise:
+            :ThrottlerStatusError: if the throttler is not ``paused``
 
         """
         if self._status != 'paused':
@@ -230,28 +300,44 @@ class BaseThrottler(object):
         self._status = 'running'
         self.status_lock.notify()
 
-    def submit(self, reqs):
-        """Submit a single request or an entire list and return the corresponding response
+    def submit(self, req):
+        """Submit a single request and return the corresponding throttled request
 
-        If `reqs` is a single request then the corresponding throttled request is returned,
-        otherwise if `reqs` is a `list` then the list of corresponding throttled requests
-        is returned.
-
-        `reqs` - it can be a single request or a list of them
+        :param req: the request to throttle
+        :type req: requests.Request
+        :return: the corresponding throttled request
+        :rtype: :class:`requests_throttler.throttled_request.ThrottledRequest`
+        :raise:
+            :ThrottlerStatusError: if the throttler is not ``running``, ``paused`` or
+                                   ``waiting``
         
         """
-        if isinstance(reqs, list):
-            return [self._submit(r) for r in reqs]
-        return self._submit(reqs)
+        return self._submit(req)
+
+    def multi_submit(self, reqs):
+        """Submits a list of requests and return the corresponding list of throttled requests
+
+        :param reqs: the list of requests to throttle
+        :type req: list(requests.Request)
+        :return: the corresponding list of throttled requests
+        :rtype: list(:class:`requests_throttler.throttled_request.ThrottledRequest`)
+        :raise:
+            :ThrottlerStatusError: if the throttler is not ``running``, ``paused`` or
+                                   ``waiting``
+        
+        """
+        return [self._submit(r) for r in reqs]
 
     def _submit(self, request):
         """Submits the given request by preparing it and enqueueing it
 
-        If the throttler is not `running`, `paused` or `waiting` an exception is raised.
-        With the returned throttled request is associated an eventual exception that could be
-        raised during the preparation or the enqueueing.
-
-        `request` - the request to submit
+        :param req: the request to throttle
+        :type req: requests.Request
+        :return: the corresponding throttled request
+        :rtype: :class:`requests_throttler.throttled_request.ThrottledRequest`
+        :raise:
+            :ThrottlerStatusError: if the throttler is not ``running``, ``paused`` or
+                                   ``waiting``
 
         """
         logger.info("Submitting request to base throttler (url: %s)...", request.url)
@@ -281,14 +367,14 @@ class BaseThrottler(object):
 
     @locked('status_lock')
     def _end(self):
-        """Set the `ended` status"""
+        """Set the ``ended`` status"""
 
         self._status = 'ended'
         self.status_lock.notify()
 
     @locked('status_lock')
     def wait_end(self):
-        """Wait untile the throttler is `ended`"""
+        """Wait until the throttler is ``ended``"""
 
         while self._status != 'ended':
             self.status_lock.wait()
@@ -310,8 +396,12 @@ class BaseThrottler(object):
             self._timer.checkpoint = time.time()
 
     def _remaining_time(self):
-        """Return the remaining time before performing the next request"""
+        """Return the remaining time before performing the next request
 
+        :return: the remaining time before sending the next request
+        :rtype: float
+
+        """
         return self._delay - self._timer.elapsed()
 
     def _prepare_request(self, request):
@@ -320,7 +410,10 @@ class BaseThrottler(object):
         If an exception occurs during the preparation it is associated to the throttled request
         created.
 
-        `request` - the request to prepare
+        :param req: the request to throttle
+        :type req: requests.Request
+        :return: the throttled request and the flag indicating if it has been correctly prepared
+        :rtype: (:class:`requests_throttler.throttled_requests.ThrottledRequest`, boolean)
 
         """
         try:
@@ -343,8 +436,9 @@ class BaseThrottler(object):
 
         If an exception occurs during the sending it is associated to the throttled request.
 
-        `throttled_request` - the throttled request to send
-        
+        :param throttled_request: the throttled request to send
+        :type throttled_request: requests_throttler.throttled_request.ThrottledRequest
+
         """
         try:
             logger.info("Sending request (url: %s)...", throttled_request.request.url)
@@ -363,9 +457,10 @@ class BaseThrottler(object):
     def _enqueue_request(self, throttled_request):
         """Enqueue the given throttled request
 
-        If the the pool of requests is full `FullRequestPoolError` is raised.
-
-        `throttled_request` - the throttled request to enqueue
+        :param throttled_request: the throttled request to enqueue
+        :type throttled_request: requests_throttler.throttled_request.ThrottledRequest
+        :raise:
+            :FullRequestsPoolError: if the pool of requests is full
 
         """
         logger.debug("Enqueueing request (url: %s)...", throttled_request.request.url)
@@ -380,8 +475,11 @@ class BaseThrottler(object):
     def _dequeue_request(self):
         """Dequeue the next throttled request to process and return it
 
-        If the throttler is `running` and no requests are eunqueued the throttler waits until
+        If the throttler is ``running`` and no requests are eunqueued the throttler waits until
         a new request arrives.
+
+        :return: the next throttled request to send
+        :rtype: requests_throttler.throttled_request.ThrottledRequest
 
         """
         logger.debug("Dequeueing request...")
@@ -406,8 +504,10 @@ class BaseThrottler(object):
     def _dequeue_condition(self):
         """Check if the throttler has to wait or has to proceed
 
-        Returns a tuple of the form (`waiting`, `proceed`) where `waiting` indicates if the
-        throttler has to wait while `proceed` indicates if the throttler has to proceed.
+        :return: a tuple of the form (``waiting``, ``proceed``) where ``waiting`` indicates if
+                 the throttler has to wait while ``proceed`` indicates if the throttler has to
+                 proceed
+        :rtype: (boolean, boolean)
 
         """
         if self.status == 'stopped':

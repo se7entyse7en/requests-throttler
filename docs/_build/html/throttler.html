@@ -1,0 +1,494 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>throttler — the module containing the throttlers &mdash; RequestsThrottler 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="RequestsThrottler 0.1.1 documentation" href="index.html" />
+    <link rel="next" title="utils — utilities" href="utils.html" />
+    <link rel="prev" title="throttled_request — the module containing the objects to throttle" href="throttled_request.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="utils — utilities"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="throttled_request.html" title="throttled_request — the module containing the objects to throttle"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">RequestsThrottler 0.1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-requests_throttler.throttler">
+<span id="throttler-the-module-containing-the-throttlers"></span><h1><a class="reference internal" href="#module-throttler" title="throttler: The module containing the throttlers"><tt class="xref py py-mod docutils literal"><span class="pre">throttler</span></tt></a> &#8212; the module containing the throttlers<a class="headerlink" href="#module-requests_throttler.throttler" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-throttler"></span><p>This module contains the throttlers.</p>
+<div class="section" id="basethrottler-the-simplest-requests-throttler">
+<h2><a class="reference internal" href="#requests_throttler.throttler.BaseThrottler" title="requests_throttler.throttler.BaseThrottler"><tt class="xref py py-class docutils literal"><span class="pre">BaseThrottler</span></tt></a> - the simplest requests throttler<a class="headerlink" href="#basethrottler-the-simplest-requests-throttler" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="requests_throttler.throttler.ThrottlerStatusError">
+<em class="property">class </em><tt class="descclassname">requests_throttler.throttler.</tt><tt class="descname">ThrottlerStatusError</tt><big>(</big><em>msg</em>, <em>current_status</em>, <em>previous_status=None</em><big>)</big><a class="headerlink" href="#requests_throttler.throttler.ThrottlerStatusError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception that occurs when something goes wrong while changing status</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>msg</strong> (<em>string</em>) &#8211; the message</li>
+<li><strong>current_status</strong> (<em>string</em>) &#8211; the status to set</li>
+<li><strong>previous_status</strong> (<em>string</em>) &#8211; the previous status</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="requests_throttler.throttler.FullRequestsPoolError">
+<em class="property">class </em><tt class="descclassname">requests_throttler.throttler.</tt><tt class="descname">FullRequestsPoolError</tt><big>(</big><em>msg</em>, <em>pool</em><big>)</big><a class="headerlink" href="#requests_throttler.throttler.FullRequestsPoolError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception that occurs when an enqueue is tried in a full pool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>msg</strong> (<em>string</em>) &#8211; the message</li>
+<li><strong>pool</strong> (<em>collections.deque</em>) &#8211; the pool</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="requests_throttler.throttler.BaseThrottler">
+<em class="property">class </em><tt class="descclassname">requests_throttler.throttler.</tt><tt class="descname">BaseThrottler</tt><big>(</big><em>name=None</em>, <em>delay=0</em>, <em>max_pool_size=None</em><big>)</big><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class provides the base requests throttler</p>
+<p>The base throttler guarantees that between each request a fixed amount of time between them
+elapsed. The pool can be limited by a maximum length and an exception is raised if a request
+is tried to be enqueued in the full pool.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>string</em>) &#8211; the name of the throttler</li>
+<li><strong>requests_pool</strong> (<em>collections.dequeue</em>) &#8211; the pool containing the requests (FIFO)</li>
+<li><strong>delay</strong> (<em>float</em>) &#8211; the delay in seconds between each request</li>
+<li><strong>status</strong> (<em>string</em>) &#8211; the current status of the thottler</li>
+<li><strong>session</strong> (<em>requests.Session</em>) &#8211; the session to use to perform the requests</li>
+<li><strong>executor</strong> (<em>threading.ThreadPoolExecutor</em>) &#8211; the executor responsable to start the throttler</li>
+<li><strong>timer</strong> (<em>utils.Timer</em>) &#8211; the timer responsable to measure the time between each request</li>
+<li><strong>successes</strong> (<em>int</em>) &#8211; the number of request that succeded</li>
+<li><strong>failures</strong> &#8211; the number of request that failed</li>
+<li><strong>wait_enqueued</strong> (<em>boolean</em>) &#8211; a flag that indicates if after the shutdown the requests enqueued
+have to be finished or aborted</li>
+<li><strong>status_lock</strong> (<em>threading.Condition</em>) &#8211; the condition on which to wait on a specific status change</li>
+<li><strong>not_empty</strong> (<em>threading.Condition</em>) &#8211; the condition on which to wait when the pool of requests is empty</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="requests_throttler.throttler.BaseThrottler.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>name=None</em>, <em>delay=0</em>, <em>max_pool_size=None</em><big>)</big><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a base throttler with the given delay time and pool size</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>string</em>) &#8211; the name of the throttler (default: <tt class="xref py py-const docutils literal"><span class="pre">None</span></tt>)</li>
+<li><strong>delay</strong> (<em>float</em>) &#8211; the fixed positive amount of time that must elapsed bewteen each request
+in seconds (default: 0)</li>
+<li><strong>max_pool_size</strong> (<em>int</em>) &#8211; the maximum number of enqueueable requests (default: <em>unlimited</em>)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raise:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ValueError:</th><td class="field-body">if <tt class="docutils literal"><span class="pre">delay</span></tt> is a negative number</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="requests_throttler.throttler.BaseThrottler.name">
+<tt class="descname">name</tt><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the throttler</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns <a class="reference internal" href="#requests_throttler.throttler.BaseThrottler.name" title="requests_throttler.throttler.BaseThrottler.name"><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="requests_throttler.throttler.BaseThrottler.delay">
+<tt class="descname">delay</tt><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler.delay" title="Permalink to this definition">¶</a></dt>
+<dd><p>The delay value between each request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns <a class="reference internal" href="#requests_throttler.throttler.BaseThrottler.delay" title="requests_throttler.throttler.BaseThrottler.delay"><tt class="xref py py-attr docutils literal"><span class="pre">delay</span></tt></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="requests_throttler.throttler.BaseThrottler.status">
+<tt class="descname">status</tt><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>The status of the throttler</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body"><p class="first">Returns <a class="reference internal" href="#requests_throttler.throttler.BaseThrottler.status" title="requests_throttler.throttler.BaseThrottler.status"><tt class="xref py py-attr docutils literal"><span class="pre">status</span></tt></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body"><p class="first">Sets the new status</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raise:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">ThrottlerStatusError:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">if the new status is invalid</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">string</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="requests_throttler.throttler.BaseThrottler.successes">
+<tt class="descname">successes</tt><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler.successes" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of successes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns <a class="reference internal" href="#requests_throttler.throttler.BaseThrottler.successes" title="requests_throttler.throttler.BaseThrottler.successes"><tt class="xref py py-attr docutils literal"><span class="pre">successes</span></tt></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="requests_throttler.throttler.BaseThrottler.failures">
+<tt class="descname">failures</tt><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler.failures" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of failures</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns <a class="reference internal" href="#requests_throttler.throttler.BaseThrottler.failures" title="requests_throttler.throttler.BaseThrottler.failures"><tt class="xref py py-attr docutils literal"><span class="pre">failures</span></tt></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="requests_throttler.throttler.BaseThrottler.start">
+<tt class="descname">start</tt><big>(</big><big>)</big><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the throttler by starting the main loop</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raise:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">ThrottlerStatusError:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">if the throller has been already started</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="requests_throttler.throttler.BaseThrottler.shutdown">
+<tt class="descname">shutdown</tt><big>(</big><em>wait_enqueued=True</em><big>)</big><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler.shutdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shutdown the throttler by shutdowning the executor</p>
+<p>If <tt class="docutils literal"><span class="pre">wait_enqueued</span></tt> is <tt class="xref py py-const docutils literal"><span class="pre">True</span></tt> then before stopping the throttlers consumes all
+the requests enqueued. Otherwise the throttler is forced to be shutdowned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>wait_enqueued</strong> &#8211; the flag that indicates if the already enqueued requests are to be
+processed or aborted</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raise:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">ThrottlerStatusError:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">if the throttler has been already shutdowned</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="requests_throttler.throttler.BaseThrottler.pause">
+<tt class="descname">pause</tt><big>(</big><big>)</big><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler.pause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pause the throttler</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raise:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">ThrottlerStatusError:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">if the throttler is not <tt class="docutils literal"><span class="pre">running</span></tt>, <tt class="docutils literal"><span class="pre">waiting</span></tt> or already
+<tt class="docutils literal"><span class="pre">paused</span></tt></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="requests_throttler.throttler.BaseThrottler.unpause">
+<tt class="descname">unpause</tt><big>(</big><big>)</big><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler.unpause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unpause the throttler</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raise:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">ThrottlerStatusError:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">if the throttler is not <tt class="docutils literal"><span class="pre">paused</span></tt></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="requests_throttler.throttler.BaseThrottler.submit">
+<tt class="descname">submit</tt><big>(</big><em>req</em><big>)</big><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler.submit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit a single request and return the corresponding throttled request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>req</strong> (<em>requests.Request</em>) &#8211; the request to throttle</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the corresponding throttled request</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="throttled_request.html#requests_throttler.throttled_request.ThrottledRequest" title="requests_throttler.throttled_request.ThrottledRequest"><tt class="xref py py-class docutils literal"><span class="pre">requests_throttler.throttled_request.ThrottledRequest</span></tt></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raise:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">ThrottlerStatusError:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">if the throttler is not <tt class="docutils literal"><span class="pre">running</span></tt>, <tt class="docutils literal"><span class="pre">paused</span></tt> or
+<tt class="docutils literal"><span class="pre">waiting</span></tt></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="requests_throttler.throttler.BaseThrottler.multi_submit">
+<tt class="descname">multi_submit</tt><big>(</big><em>reqs</em><big>)</big><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler.multi_submit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submits a list of requests and return the corresponding list of throttled requests</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>reqs</strong> &#8211; the list of requests to throttle</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the corresponding list of throttled requests</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">list(<a class="reference internal" href="throttled_request.html#requests_throttler.throttled_request.ThrottledRequest" title="requests_throttler.throttled_request.ThrottledRequest"><tt class="xref py py-class docutils literal"><span class="pre">requests_throttler.throttled_request.ThrottledRequest</span></tt></a>)</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raise:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">ThrottlerStatusError:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">if the throttler is not <tt class="docutils literal"><span class="pre">running</span></tt>, <tt class="docutils literal"><span class="pre">paused</span></tt> or
+<tt class="docutils literal"><span class="pre">waiting</span></tt></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="requests_throttler.throttler.BaseThrottler.wait_end">
+<tt class="descname">wait_end</tt><big>(</big><big>)</big><a class="headerlink" href="#requests_throttler.throttler.BaseThrottler.wait_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the throttler is <tt class="docutils literal"><span class="pre">ended</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">throttler</span></tt> &#8212; the module containing the throttlers</a><ul>
+<li><a class="reference internal" href="#basethrottler-the-simplest-requests-throttler"><tt class="docutils literal"><span class="pre">BaseThrottler</span></tt> - the simplest requests throttler</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="throttled_request.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">throttled_request</span></tt> &#8212; the module containing the objects to throttle</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="utils.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">utils</span></tt> &#8212; utilities</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/throttler.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="utils — utilities"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="throttled_request.html" title="throttled_request — the module containing the objects to throttle"
+             >previous</a> |</li>
+        <li><a href="index.html">RequestsThrottler 0.1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Lou Marvin Caraig.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

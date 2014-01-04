@@ -3,7 +3,7 @@ import unittest
 
 import requests
 
-from requests_throttler.throttled_request.throttled_request import \
+from requests_throttler.throttled_request import \
     ThrottledRequest, \
     ThrottledRequestAlreadyFinished
 
