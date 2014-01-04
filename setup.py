@@ -4,9 +4,6 @@ import requests_throttler
 
 
 packages = ['requests_throttler',
-            'requests_throttler.throttled_request',
-            'requests_throttler.throttler',
-            'requests_throttler.utils',
             'requests_throttler.tests']
 
 requires = ['requests==2.1.0',
