@@ -110,25 +110,34 @@ class BaseThrottler(object):
 
     """
 
-    def __init__(self, name=None, delay=0, max_pool_size=None):
+    def __init__(self, *args, **kwargs):
         """Create a base throttler with the given delay time and pool size
+
+        When both ``delay`` and ``reqs_over_time`` are :const:`None`, :attr:`delay` is set to
+        :const:`0`.
 
         :param name: the name of the throttler (default: :const:`None`)
         :type name: string
         :param delay: the fixed positive amount of time that must elapsed bewteen each request
-                      in seconds (default: 0)
+                      in seconds (default: :const:`None`)
         :type delay: float
+        :param reqs_over_time: a tuple of the form (`number of requests`, `time`) used to
+                               calculate the delay to use when it is :const:`None`. The delay
+                               will be equal to ``time / number of requests`` (default:
+                               :const:`None`)
+        :type reqs_over_time: (float, float)
         :param max_pool_size: the maximum number of enqueueable requests (default: *unlimited*)
         :type max_pool_size: int
+        :param session: the session to use (default ``requests.Session()``)
+        :type sessions: requests.Session
         :raise:
-            :ValueError: if ``delay`` is a negative number
+            :ValueError: if ``delay`` or the value calculated from ``reqs_over_time`` is a
+                         negative number
 
         """
-        if delay < 0:
-            raise ValueError("The delay value must be positive.")
-        self._name = name
-        self._requests_pool = queue(maxlen=max_pool_size)
-        self._delay = delay
+        self._name = kwargs.get('name')
+        self._requests_pool = queue(maxlen=kwargs.get('max_pool_size'))
+        self._delay = self._get_delay(kwargs.get('delay'), kwargs.get('reqs_over_time'))
         self._status = 'initialized'
         self._session = requests.Session()
         self._executor = ThreadPoolExecutor(max_workers=1)
@@ -138,6 +147,34 @@ class BaseThrottler(object):
         self._wait_enqueued = None
         self.status_lock = threading.Condition(threading.Lock())
         self.not_empty = threading.Condition(threading.Lock())
+
+    def _get_delay(self, delay, reqs_over_time):
+        """Calculates the delay to assign
+
+        :param delay: the fixed positive amount of time that must elapsed bewteen each request
+                      in seconds (default: :const:`None`)
+        :type delay: float
+        :param reqs_over_time: a tuple of the form (`number of requests`, `time`) used to
+                               calculate the delay to use when it is :const:`None`. The delay
+                               will be equal to ``time``/``number of requests``.
+        :type reqs_over_time: tuple
+        :return: the value of ``delay`` to use (default :const:`0`)
+        :rtype: float
+        :raise:
+            :ValueError: if ``delay`` or the value calculated from ``reqs_over_time`` is a
+                         negative number
+
+        """
+        if delay is None:
+            if reqs_over_time is None:
+                return 0
+            n_reqs, time_for_reqs = reqs_over_time
+            if n_reqs < 0 or time_for_reqs < 0:
+                raise ValueError("The number of requests and the time value must be positive.")
+            delay = float(time_for_reqs) / n_reqs
+        if delay < 0:
+            raise ValueError("The delay value must be positive.")
+        return delay
 
     def __str__(self):
         return "[{class_name} <{name}, {delay}, {status}>]".format(class_name="BaseThrottler",
@@ -357,10 +394,10 @@ class BaseThrottler(object):
 
         logger.info("Starting main loop...")
         while True:
-            self._sleep_or_pause()
             next_request = self._dequeue_request()
             if next_request is None:
                 break
+            self._sleep_or_pause()
             self._send_request(next_request)
         logger.info("Exited from main loop.")
         self._end()

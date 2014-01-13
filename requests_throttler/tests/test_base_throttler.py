@@ -30,13 +30,25 @@ class TestBaseThrottler(unittest.TestCase):
         bt._inc_failures()
         self.assertEqual(1, bt.failures)
 
+        bt = BaseThrottler(name='bt', delay=5)
+        self.assertEqual(5, bt.delay)
+
+        bt = BaseThrottler(name='bt', reqs_over_time=(5, 15))
+        self.assertEqual(3, bt.delay)
+
+        bt = BaseThrottler(name='bt', delay=1, reqs_over_time=(5, 15))
+        self.assertEqual(1, bt.delay)
+
         with self.assertRaises(ValueError):
             BaseThrottler(name='bt', delay=-1)
+
+        with self.assertRaises(ValueError):
+            BaseThrottler(name='bt', reqs_over_time=(-1, -1))
 
         for status in THROTTLER_STATUS:
             bt._status = status
             self.assertEqual(status, bt._status)
-    
+
     def test_set_status(self):
         bt = BaseThrottler()
         for k, v1 in THROTTLER_STATUS_DEPENDENCIES.iteritems():
