@@ -1,6 +1,13 @@
 Release History
 ---------------
 
+
+0.2.1 (2014-01-14)
+^^^^^^^^^^^^^^^^^^
+
+- Added implicit way to set ``delay`` for ``BaseThrottler`` by using ``reqs_over_time``
+
+
 0.2.0 (2014-01-04)
 ^^^^^^^^^^^^^^^^^^
 
