@@ -394,10 +394,10 @@ class BaseThrottler(object):
 
         logger.info("Starting main loop...")
         while True:
-            self._sleep_or_pause()
             next_request = self._dequeue_request()
             if next_request is None:
                 break
+            self._sleep_or_pause()
             self._send_request(next_request)
         logger.info("Exited from main loop.")
         self._end()
