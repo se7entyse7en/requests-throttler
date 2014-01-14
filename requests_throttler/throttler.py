@@ -128,8 +128,6 @@ class BaseThrottler(object):
         :type reqs_over_time: (float, float)
         :param max_pool_size: the maximum number of enqueueable requests (default: *unlimited*)
         :type max_pool_size: int
-        :param session: the session to use (default ``requests.Session()``)
-        :type sessions: requests.Session
         :raise:
             :ValueError: if ``delay`` or the value calculated from ``reqs_over_time`` is a
                          negative number
