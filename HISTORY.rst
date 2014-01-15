@@ -5,7 +5,7 @@ Release History
 0.2.2 (2014-01-15)
 ^^^^^^^^^^^^^^^^^^
 
-- Added possibility to use a used-defined session when using ``BaseThrottler``
+- Added possibility to use a user-defined session when using ``BaseThrottler``
 - Fixed example, updated README
 
 
