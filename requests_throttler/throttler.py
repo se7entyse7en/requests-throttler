@@ -118,6 +118,8 @@ class BaseThrottler(object):
 
         :param name: the name of the throttler (default: :const:`None`)
         :type name: string
+        :param session: the sessions to use for each request
+        :type session: requests.Session
         :param delay: the fixed positive amount of time that must elapsed bewteen each request
                       in seconds (default: :const:`None`)
         :type delay: float
@@ -137,7 +139,7 @@ class BaseThrottler(object):
         self._requests_pool = queue(maxlen=kwargs.get('max_pool_size'))
         self._delay = self._get_delay(kwargs.get('delay'), kwargs.get('reqs_over_time'))
         self._status = 'initialized'
-        self._session = requests.Session()
+        self._session = kwargs.get('session', requests.Session())
         self._executor = ThreadPoolExecutor(max_workers=1)
         self._timer = Timer(checkpoint=0)
         self._successes = 0
