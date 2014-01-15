@@ -47,7 +47,7 @@ Installation
 Use ``pip`` to install RequestsThrottler:
 ::
 
-    >>> pip install RequestsThrottler
+    $ pip install RequestsThrottler
 
 
 Features
