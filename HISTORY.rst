@@ -2,6 +2,12 @@ Release History
 ---------------
 
 
+0.2.3 (2014-02-16)
+^^^^^^^^^^^^^^^^^^
+
+- Fixed installation via ``pip`` (thanks to Gavin D'mello for reporting the problem)
+
+  
 0.2.2 (2014-01-15)
 ^^^^^^^^^^^^^^^^^^
 
