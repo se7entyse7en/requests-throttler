@@ -20,7 +20,9 @@ def parse_args():
 
 def main():
     args = parse_args()
-    bt = BaseThrottler(name='base-throttler', delay=args['delay'])
+    session = requests.Session()
+    session.headers.update({'user-agent': 'test-user-agent'})
+    bt = BaseThrottler(name='base-throttler', delay=args['delay'], session=session)
     reqs = []
     for i in range(0, args['n_reqs']):
         r = requests.Request(method='GET', url=args['url'], data='Request - ' + str(i + 1))
