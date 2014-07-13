@@ -455,7 +455,7 @@ class BaseThrottler(object):
         """
         try:
             logger.debug("Preparing request (url: %s)...", request.url)
-            prepared_request = request.prepare()
+            prepared_request = self._session.prepare_request(request)
         except requests.exceptions.RequestException as e:
             throttled_request = ThrottledRequest(None)
             throttled_request.exception = e
