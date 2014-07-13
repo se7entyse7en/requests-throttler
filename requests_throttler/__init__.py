@@ -1,5 +1,5 @@
 __title__ = 'RequestsThrottler'
-__version__ = '0.2.3'
+__version__ = '0.2.4'
 __author__ = 'Lou Marvin Caraig'
 __author_email__ = 'loumarvincaraig@gmail.com'
 __project_url__ = 'https://github.com/se7entyse7en/requests-throttler'

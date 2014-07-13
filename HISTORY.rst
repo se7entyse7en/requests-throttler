@@ -2,6 +2,12 @@ Release History
 ---------------
 
 
+0.2.4 (2014-07-13)
+^^^^^^^^^^^^^^^^^^
+
+- Fixed wrong request preparation (thanks to bleedinge for reporting the problem)
+
+  
 0.2.3 (2014-02-16)
 ^^^^^^^^^^^^^^^^^^
 
