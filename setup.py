@@ -12,8 +12,8 @@ AUTHOR_EMAIL_REGEX = r"^__author_email__\s=\s(?P<quote>['])(?P<author_email>.*)(
 packages = ['requests_throttler',
             'requests_throttler.tests']
 
-requires = ['requests==2.1.0',
-            'futures==2.1.5']
+requires = ['requests>=2.1.0',
+            'futures>=2.1.5']
 
 classifiers=[
     'Development Status :: 4 - Beta',
