@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fse7entyse7en%2Frequests-throttler.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fse7entyse7en%2Frequests-throttler?ref=badge_shield)
+
 RequestsThrottler: HTTP requests throttler
 ==========================================
 
@@ -54,3 +56,7 @@ Features
 --------
 
 - ``BaseThrottler`` a simple throttler with a fixed amount of delay
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fse7entyse7en%2Frequests-throttler.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fse7entyse7en%2Frequests-throttler?ref=badge_large)
