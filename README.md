@@ -1,19 +1,17 @@
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fse7entyse7en%2Frequests-throttler.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fse7entyse7en%2Frequests-throttler?ref=badge_shield)
 
-RequestsThrottler: HTTP requests throttler
-==========================================
+# RequestsThrottler: HTTP requests throttler
 
-RequestsThrottler is an Apache2 Licensed HTTP library, written in Python, and powered by futures and `Requests <https://github.com/kennethreitz/requests>`_.
-See the full documentation at `<http://pythonhosted.org/RequestsThrottler>`_.
+RequestsThrottler is an Apache2 Licensed HTTP library, written in Python, and powered by futures and [Requests](https://github.com/kennethreitz/requests>).
+See the [full documentation](http://pythonhosted.org/RequestsThrottler).
 
 With RequestsThrottler you can easily throttle HTTP requests! After having created your throttler with a delay of your choice, you just have to:
 
-1. Start the throttler 
+1. Start the throttler
 2. Submit your requests
 3. Shutdown the throttler
 
 Here's an example:
-::
 
     import requests
     from requests_throttler import BaseThrottler
@@ -30,7 +28,6 @@ Here's an example:
 
 
 Too hard? Then just submit your requests inside a with statement! Here's an example:
-::
 
     import requests
     from requests_throttler import BaseThrottler
@@ -43,19 +40,16 @@ Too hard? Then just submit your requests inside a with statement! Here's an exam
     responses = [tr.response for tr in throttled_requests]
 
 
-Installation
-------------
+## Installation
 
-Use ``pip`` to install RequestsThrottler:
-::
+Use `pip` to install RequestsThrottler:
 
     $ pip install RequestsThrottler
 
 
-Features
---------
+## Features
 
-- ``BaseThrottler`` a simple throttler with a fixed amount of delay
+- `BaseThrottler` a simple throttler with a fixed amount of delay
 
 
 ## License
