@@ -1,6 +1,11 @@
 # Release History
 
 
+## 0.2.5 (2019-02-18)
+
+- Unpinned deps in `setup.py`
+
+
 ## 0.2.4 (2014-07-13)
 
 - Fixed wrong request preparation (thanks to bleedinge for reporting the problem)
