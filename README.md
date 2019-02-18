@@ -1,8 +1,6 @@
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fse7entyse7en%2Frequests-throttler.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fse7entyse7en%2Frequests-throttler?ref=badge_shield)
-
 # RequestsThrottler: HTTP requests throttler
 
-RequestsThrottler is an Apache2 Licensed HTTP library, written in Python, and powered by futures and [Requests](https://github.com/kennethreitz/requests>).
+RequestsThrottler is an Apache2 Licensed HTTP library, written in Python, and powered by futures and [Requests](https://github.com/kennethreitz/requests).
 See the [full documentation](http://pythonhosted.org/RequestsThrottler).
 
 With RequestsThrottler you can easily throttle HTTP requests! After having created your throttler with a delay of your choice, you just have to:
@@ -50,7 +48,3 @@ Use `pip` to install RequestsThrottler:
 ## Features
 
 - `BaseThrottler` a simple throttler with a fixed amount of delay
-
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fse7entyse7en%2Frequests-throttler.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fse7entyse7en%2Frequests-throttler?ref=badge_large)
