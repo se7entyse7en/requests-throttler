@@ -13,7 +13,7 @@ class TestThrottledRequestCase(unittest.TestCase):
     def setUp(self):
         self.req_url = 'http://www.google.com'
         self.default_to = 0.1
-        self.places = 2
+        self.places = 1
 
     def test_blank_throttled_request(self):
         req = requests.Request(method='GET', url=self.req_url)
@@ -114,7 +114,7 @@ class TestThrottledRequestCase(unittest.TestCase):
         throttled_request = ThrottledRequest(req)
         with throttled_request.not_done:
             self.assertEqual(False, throttled_request._wait_finished(timeout=self.default_to))
-        
+
         res = requests.get(url=self.req_url)
         throttled_request.response = res
         with throttled_request.not_done:

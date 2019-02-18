@@ -41,7 +41,7 @@ class ThrottlerStatusError(Exception):
     :type previous_status: string
 
     """
-    
+
     def __init__(self, msg, current_status, previous_status=None):
         self.msg = msg
         self.status = current_status
@@ -65,7 +65,7 @@ class FullRequestsPoolError(Exception):
     :type pool: collections.deque
 
     """
-    
+
     def __init__(self, msg, pool):
         self.msg = msg
         self.pool = pool
@@ -347,7 +347,7 @@ class BaseThrottler(object):
         :raise:
             :ThrottlerStatusError: if the throttler is not ``running``, ``paused`` or
                                    ``waiting``
-        
+
         """
         return self._submit(req)
 
@@ -361,7 +361,7 @@ class BaseThrottler(object):
         :raise:
             :ThrottlerStatusError: if the throttler is not ``running``, ``paused`` or
                                    ``waiting``
-        
+
         """
         return [self._submit(r) for r in reqs]
 
@@ -456,7 +456,7 @@ class BaseThrottler(object):
         try:
             logger.debug("Preparing request (url: %s)...", request.url)
             prepared_request = self._session.prepare_request(request)
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             throttled_request = ThrottledRequest(None)
             throttled_request.exception = e
             self._inc_failures()
@@ -529,7 +529,7 @@ class BaseThrottler(object):
                 logger.info("Awakening...")
             else:
                 waiting = False
-        
+
         if proceed:
             next_request = self._requests_pool.popleft()
         else:
