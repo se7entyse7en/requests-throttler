@@ -27,9 +27,9 @@ classifiers=[
     'Topic :: Internet :: WWW/HTTP'
 ]
 
-with open('README.rst') as f:
+with open('README.md') as f:
     readme = f.read()
-with open('HISTORY.rst') as f:
+with open('HISTORY.md') as f:
     history = f.read()
 with open('./requests_throttler/__init__.py') as f:
     datas = f.read()
