@@ -61,7 +61,7 @@ class TestBaseThrottler(unittest.TestCase):
                     with self.assertRaises(ThrottlerStatusError):
                         bt.status = v2
                 bt._status = k
-            
+
         with self.assertRaises(ThrottlerStatusError):
             bt.status = 'invalid-status'
 
@@ -209,28 +209,12 @@ class TestBaseThrottler(unittest.TestCase):
 
         throttled_request, _ = bt._prepare_request(self.default_request)
         bt._send_request(throttled_request)
-      
+
         self.assertEqual(1, bt.successes)
         self.assertEqual(0, bt.failures)
         self.assertTrue(throttled_request.finished)
         self.assertIsNotNone(throttled_request._response)
         self.assertIsNone(throttled_request._exception)
-
-        bt = BaseThrottler()
-
-        request = requests.Request(method=None, url='http://None')
-        throttled_request, _ = bt._prepare_request(request)
-        bt._send_request(throttled_request)
-      
-        self.assertEqual(1, bt.failures)
-        self.assertEqual(0, bt.successes)
-        self.assertTrue(throttled_request.finished)
-        self.assertIsNone(throttled_request._response)
-        self.assertIsNotNone(throttled_request._exception)
-        self.assertIsInstance(throttled_request._exception, Exception)
-
-        with self.assertRaises(Exception):
-            throttled_request.response
 
     def test_enqueue_request(self):
         bt = BaseThrottler(max_pool_size=1)
@@ -282,7 +266,7 @@ class TestBaseThrottler(unittest.TestCase):
         bt._status = 'paused'
         self.assertEqual((True, False), bt._dequeue_condition())
         self.assertEqual('paused', bt._status)
-        
+
         for wait_enqueued in [True, False]:
             bt._status = 'stopped'
             bt._wait_enqueued = wait_enqueued
