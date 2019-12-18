@@ -385,7 +385,7 @@ class BaseThrottler(object):
             try:
                 self._enqueue_request(throttled_request)
             except FullRequestsPoolError as e:
-                throttled_request.exception(e)
+                throttled_request.exception = e
                 self._inc_failures()
         return throttled_request
 

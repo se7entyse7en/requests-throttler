@@ -12,8 +12,7 @@ AUTHOR_EMAIL_REGEX = r"^__author_email__\s=\s(?P<quote>['])(?P<author_email>.*)(
 packages = ['requests_throttler',
             'requests_throttler.tests']
 
-requires = ['requests>=2.1.0',
-            'futures>=2.1.5']
+requires = ['requests>=2.1.0']
 
 classifiers=[
     'Development Status :: 4 - Beta',
@@ -55,4 +54,5 @@ setup(name=title,
       package_data={'': ['LICENSE']},
       include_package_data=True,
       install_requires=requires,
+      extras_require={':python_version == "2.7"': ['futures >= 2.1.5']},
       classifiers=classifiers)
