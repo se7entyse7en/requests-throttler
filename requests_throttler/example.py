@@ -4,6 +4,8 @@ import requests
 
 from requests_throttler import BaseThrottler
 
+import logging
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -32,9 +34,9 @@ def main():
         throttled_requests = bt.multi_submit(reqs)
 
     for r in throttled_requests:
-        print r.response
+        print(r.response)
 
-    print "Success: {s}, Failures: {f}".format(s=bt.successes, f=bt.failures)
+    print("Success: {s}, Failures: {f}".format(s=bt.successes, f=bt.failures))
 
 
 if __name__ == '__main__':

@@ -9,13 +9,8 @@ This module provides some utilities used by other modules.
 """
 
 import time
-import logging
 import threading
 from functools import wraps
-
-from requests_throttler.settings import \
-    LOG_FORMAT, \
-    DEFAULT_LOG_LEVEL
 
 
 def locked(lock):
@@ -39,13 +34,6 @@ def locked(lock):
 
         return wrapper
     return _locked
-
-
-def get_logger(name, level=DEFAULT_LOG_LEVEL):
-    logging.basicConfig(format=LOG_FORMAT[level])
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
-    return logger
 
 
 class NoCheckpointSetError(Exception):

@@ -1,15 +1,11 @@
-import logging
 
 ###----------------------###
 #---- Logging settings ----#
 ###----------------------###
-LOG_FORMAT_0=("[TID=%(thread)d - Thread=%(threadName)s - %(asctime)s - %(levelname)s - "
-              "%(module)s.%(funcName)s(%(lineno)d)]: %(message)s")
-LOG_FORMAT_1=("[Thread=%(threadName)s - %(asctime)s - %(levelname)s]: %(message)s")
-LOG_FORMAT_2=("[%(asctime)s - %(levelname)s]: %(message)s")
-LOG_FORMAT={logging.DEBUG: LOG_FORMAT_0,
-            logging.INFO: LOG_FORMAT_1,
-            logging.WARNING: LOG_FORMAT_2,
-            logging.ERROR: LOG_FORMAT_0,
-            logging.CRITICAL: LOG_FORMAT_0}
-DEFAULT_LOG_LEVEL=logging.INFO
+
+# Removed logging settings as this will be handled by the root logger
+# 
+# Logging is provided throughout the request throttling process and is sent to the root logger in the application that calls this library.
+# Instantiate a logger object using logger = logging.getLogger() - note that no argument is provided for a root logger.
+# This will act as the parent logger for this library's own logger and will control all logging output/formatting
+# The root logger will need to be configured with file and/or stream handlers as per: https://docs.python.org/3/howto/logging.html#logging-advanced-tutorial

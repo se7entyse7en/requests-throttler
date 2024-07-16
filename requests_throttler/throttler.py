@@ -8,6 +8,7 @@ This module contains the throttlers.
 
 """
 
+import logging
 import time
 import threading
 from collections import deque as queue
@@ -16,10 +17,10 @@ from concurrent.futures import ThreadPoolExecutor
 import requests
 
 from requests_throttler.utils import Timer
-from requests_throttler.utils import locked, get_logger
+from requests_throttler.utils import locked
 from requests_throttler.throttled_request import ThrottledRequest
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 THROTTLER_STATUS = ['initialized', 'running', 'waiting', 'paused', 'stopped', 'ending', 'ended']
 THROTTLER_STATUS_DEPENDENCIES = {'initialized': ['initialized', 'running', 'stopped'],
